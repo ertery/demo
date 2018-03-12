@@ -1,6 +1,7 @@
 package com.ut.demo.controllers
 
 import com.ut.demo.dto.ErrorResponse
+import com.ut.demo.dto.LoggingDto
 import com.ut.demo.dto.RecordDto
 import com.ut.demo.dto.ValidationError
 import com.ut.demo.services.RecordService
@@ -26,7 +27,7 @@ class MainController(private val recordService: RecordService) {
             result.fieldErrors.forEach { e -> run { errors.add(ValidationError(field = e.field, message = e.defaultMessage)) } }
             return ResponseEntity(ErrorResponse(errors = errors), HttpStatus.BAD_REQUEST)
         }
-        return ResponseEntity(recordService.saveRecord(record), HttpStatus.OK)
+        return ResponseEntity(LoggingDto(id = recordService.saveRecord(record)), HttpStatus.OK)
     }
 
     @GetMapping("/records")

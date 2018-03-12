@@ -29,7 +29,7 @@ open class WebSecurityConfig(private val basicAuthenticationPoint: BasicAuthenti
     override fun configure(http: HttpSecurity) {
         http
                 .authorizeRequests()
-                .antMatchers("/*").access("hasRole('ADMIN')")
+                .antMatchers("/**").access("hasRole('ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic().authenticationEntryPoint(basicAuthenticationPoint)

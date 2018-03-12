@@ -35,7 +35,8 @@ class EnumValidator : ConstraintValidator<EnumValidation, String> {
             true
         } catch (ex: Exception) {
             context.disableDefaultConstraintViolation()
-            context.buildConstraintViolationWithTemplate("Illegal level value, choose one from this list: " + LoggingLevel.values().joinToString { it.toString() }).addConstraintViolation()
+            context.buildConstraintViolationWithTemplate("Illegal level value, choose one from this list: " +
+                     LoggingLevel.values().joinToString { it.toString() }).addConstraintViolation()
             false
         }
     }

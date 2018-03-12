@@ -14,40 +14,50 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.transaction.Transactional
 
 
 @Service
-class RecordService(val recordsRepository: RecordsRepository, val userRepository: UserRepository) {
+open class RecordService(val recordsRepository: RecordsRepository, val userRepository: UserRepository) {
 
     private val sort = Sort(Sort.Order(Sort.Direction.ASC, "dt"))
 
-    fun saveRecord(record: RecordDto): Long? {
+    @Transactional
+    open fun saveRecord(record: RecordDto): Long {
         val user = SecurityContextHolder.getContext().authentication.principal as User
         val dbUser = userRepository.findByUsername(username = user.username)
-        val newRecord= RecordEntity(dt = LocalDateTime.parse(record.dt, DateTimeFormatter.ISO_DATE_TIME),
+        val newRecord = RecordEntity(dt = LocalDateTime.parse(record.dt, DateTimeFormatter.ISO_DATE_TIME),
                 message = record.message, level = LoggingLevel.valueOf(record.level), author = user.username)
         newRecord.user = dbUser
-        return recordsRepository.saveAndFlush(newRecord).id
+        val savedRecord = recordsRepository.saveAndFlush(newRecord)
+        if (savedRecord?.id == null) {
+            return -1
+        }
+        return savedRecord.id
     }
 
-    fun getRecords(page: Int, size: Int): List<Any> {
+    @Transactional
+    open fun getRecords(page: Int, size: Int): List<Any> {
         val paging: Pageable = PageRequest(page, size, sort)
-        return recordsRepository.findAll(paging).map {
-            content -> ResponseDto(
-                dt = content.dt.toString(),
-                author = content.author,
-                message = content.message,
-                level = content.level.toString()) }
-               .toList()
+        return recordsRepository.findAll(paging).map { content ->
+            ResponseDto(
+                    dt = content.dt.toString(),
+                    author = content.author,
+                    message = content.message,
+                    level = content.level.toString())
+        }
+                .toList()
     }
 
-    fun getAllRecords(): List<ResponseDto> {
-         return recordsRepository.findAll(sort).map {
-            content -> ResponseDto(
-                dt = content.dt.toString(),
-                author = content.author,
-                message = content.message,
-                level = content.level.toString()) }
+    @Transactional
+    open fun getAllRecords(): List<ResponseDto> {
+        return recordsRepository.findAll(sort).map { content ->
+            ResponseDto(
+                    dt = content.dt.toString(),
+                    author = content.author,
+                    message = content.message,
+                    level = content.level.toString())
+        }
                 .toList()
 
     }
