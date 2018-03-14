@@ -9,7 +9,6 @@ import javax.validation.ConstraintValidatorContext
 import kotlin.reflect.KClass
 
 
-
 @MustBeDocumented
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [(InDateRangeValidator::class)])
@@ -19,18 +18,16 @@ annotation class DateValidation(val message: String = "default",
                                 val payload: Array<KClass<out Any>> = [])
 
 
-class InDateRangeValidator : ConstraintValidator<DateValidation, String> {
-
-    private lateinit var constraintAnnotation: DateValidation
+class InDateRangeValidator : ConstraintValidator<DateValidation, String?> {
 
     override fun initialize(constraintAnnotation: DateValidation) {
-        this.constraintAnnotation = constraintAnnotation
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
         if (value.isNullOrBlank()) {
             context.disableDefaultConstraintViolation()
             context.buildConstraintViolationWithTemplate("Date is null or empty").addConstraintViolation()
+            return false
         }
         return try {
             LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME)

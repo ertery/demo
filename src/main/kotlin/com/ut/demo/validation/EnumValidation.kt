@@ -18,25 +18,22 @@ annotation class EnumValidation(val message: String = "default",
 
 class EnumValidator : ConstraintValidator<EnumValidation, String> {
 
-    private lateinit var constraintAnnotation: EnumValidation
-
     override fun initialize(constraintAnnotation: EnumValidation) {
-        this.constraintAnnotation = constraintAnnotation
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
-        if (value.isNullOrBlank() || value == null) {
+        if (value.isNullOrBlank()) {
             context.disableDefaultConstraintViolation()
             context.buildConstraintViolationWithTemplate("Level field is null or empty").addConstraintViolation()
             return false
         }
         return try {
-            LoggingLevel.valueOf(value)
+            LoggingLevel.valueOf(value!!)
             true
         } catch (ex: Exception) {
             context.disableDefaultConstraintViolation()
             context.buildConstraintViolationWithTemplate("Illegal level value, choose one from this list: " +
-                     LoggingLevel.values().joinToString { it.toString() }).addConstraintViolation()
+                    LoggingLevel.values().joinToString { it.toString() }).addConstraintViolation()
             false
         }
     }

@@ -27,7 +27,7 @@ open class RecordService(private val recordsRepository: RecordsRepository, priva
         val user = SecurityContextHolder.getContext().authentication.principal as User
         val dbUser = userRepository.findByUsername(username = user.username)
         val newRecord = RecordEntity(dt = LocalDateTime.parse(record.dt, DateTimeFormatter.ISO_DATE_TIME),
-                message = record.message, level = LoggingLevel.valueOf(record.level), author = user.username)
+                message = record.message!!, level = LoggingLevel.valueOf(record.level!!), author = user.username)
         newRecord.user = dbUser
         val savedRecord = recordsRepository.saveAndFlush(newRecord)
         if (savedRecord?.id == null) {
