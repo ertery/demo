@@ -18,7 +18,7 @@ import javax.transaction.Transactional
 
 
 @Service
-open class RecordService(val recordsRepository: RecordsRepository, val userRepository: UserRepository) {
+open class RecordService(private val recordsRepository: RecordsRepository, private val userRepository: UserRepository) {
 
     private val sort = Sort(Sort.Order(Sort.Direction.ASC, "dt"))
 
@@ -37,7 +37,7 @@ open class RecordService(val recordsRepository: RecordsRepository, val userRepos
     }
 
     @Transactional
-    open fun getRecords(page: Int, size: Int): List<Any> {
+    open fun getRecords(page: Int, size: Int): List<ResponseDto> {
         val paging: Pageable = PageRequest(page, size, sort)
         return recordsRepository.findAll(paging).map { content ->
             ResponseDto(

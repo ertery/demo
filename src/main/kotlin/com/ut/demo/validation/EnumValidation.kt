@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 
 @MustBeDocumented
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.FIELD, AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [(EnumValidator::class)])
 @Retention(AnnotationRetention.RUNTIME)
 annotation class EnumValidation(val message: String = "default",

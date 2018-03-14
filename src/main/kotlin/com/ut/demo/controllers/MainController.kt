@@ -17,9 +17,6 @@ import javax.validation.Valid
 @CrossOrigin(origins = ["*"])
 class MainController(private val recordService: RecordService) {
 
-    @GetMapping("")
-    fun getTest(): String = "Приветики"
-
     @PostMapping("/record")
     fun addRecord(@Valid @RequestBody record: RecordDto, result: BindingResult): ResponseEntity<*> {
         if (result.hasErrors()) {

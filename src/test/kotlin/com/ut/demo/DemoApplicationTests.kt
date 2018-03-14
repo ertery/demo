@@ -6,10 +6,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -44,18 +41,37 @@ class DemoApplicationTests {
     }
 
     @Test
-    fun `testThatUserOtherNotHaveAccessToAPI`() {
+    fun testThatUserOtherNotHaveAccessToAPI() {
         mockMvc.perform(get("/demo/records")
                 .with(httpBasic("other", "other")))
                 .andExpect(status().is4xxClientError)
+        mockMvc.perform(get("/demo/")
+                .with(httpBasic("other", "other")))
+                .andExpect(status().isForbidden)
     }
 
     @Test
-    fun `testThatUserAdminHasAccessToAPI`() {
+    fun testThatUserAdminHasAccessToAPI() {
         mockMvc.perform(get("/demo/records")
                 .with(httpBasic("admin", "admin")))
                 .andExpect(status().isOk)
     }
 
+    @Test
+    fun testUnauthorizedWithoutUser() {
+        mockMvc.perform(get("/demo/records"))
+                .andExpect(status().isUnauthorized)
+        mockMvc.perform(get("/demo/"))
+                .andExpect(status().isUnauthorized)
+    }
 
+    @Test
+    fun testUnauthorizedWithUser() {
+        mockMvc.perform(get("/demo/records")
+                .with(httpBasic("demo", "demo")))
+                .andExpect(status().isUnauthorized)
+        mockMvc.perform(get("/demo/")
+                .with(httpBasic("demo", "demo")))
+                .andExpect(status().isUnauthorized)
+    }
 }
