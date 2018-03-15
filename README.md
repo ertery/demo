@@ -1,3 +1,6 @@
+Start application by command
+ mvn spring-boot:run
+
 default port 8800
 This demo project have next API:
 
