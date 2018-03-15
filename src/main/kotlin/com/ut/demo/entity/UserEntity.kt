@@ -7,10 +7,10 @@ import javax.persistence.*
 data class UserEntity(
 
         @Column
-        val password: String,
+        val password: String? = null,
 
         @Column
-        val username: String
+        val username: String? = null
 ) {
 
     @Id

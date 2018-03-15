@@ -8,14 +8,14 @@ import javax.persistence.*
 @Table(name = "records")
 data class RecordEntity(
 
-        val dt: LocalDateTime,
+        val dt: LocalDateTime? = null,
 
         @Enumerated(EnumType.STRING)
-        val level: LoggingLevel,
+        val level: LoggingLevel? = null,
 
-        val message: String,
+        val message: String? = null,
 
-        val author: String
+        val author: String? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -13,8 +13,8 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 annotation class EnumValidation(val message: String = "default",
                                 val groups: Array<KClass<*>> = [],
-                                val payload: Array<KClass<out Any>> = []) {
-}
+                                val payload: Array<KClass<out Any>> = [])
+
 
 class EnumValidator : ConstraintValidator<EnumValidation, String> {
 
